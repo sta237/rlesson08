@@ -1,0 +1,122 @@
+---
+title: "Lecture 8: Covariance and Correlation"
+output: 
+  learnr::tutorial:
+    css: css/styles.css
+runtime: shiny_prerendered
+---
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(ggplot2)
+library(kableExtra)
+```
+
+
+## Example: Discrete Random Variables
+
+
+(Adopted from Exercise 10.3 from MIPS)
+
+Let $U$ and $V$ be two random variables with joint probability distribution defined by the following probability mass function.
+
+
+```{r echo=FALSE}
+jpmf <- rbind(
+  c("1/4", "0", "1/4", "1/2"),
+  c("0", "1/2", "0", "1/2"),
+  c("1/4", "1/2", "1/4", "1")
+  )
+rownames(jpmf) <- c("0", "1", "P(U=a)")
+colnames(jpmf) <- c("0", "1", "2", "P(V=b)")
+kable(jpmf) %>%
+  kable_paper() %>%
+  pack_rows("b", 1, 2) %>%
+  pack_rows("", 3, 3) %>%
+  add_header_above(c(" " = 1, "a" = 3, " " = 1))
+```
+
+
+Compute $E[UV]$ and $E[U+V]$ via simulation.
+
+### $E[UV]$
+
+```{r euv, exercise=TRUE, exercise.lines=10}
+n <- 100000
+```
+
+
+### $E[U+V]$
+
+```{r eupv, exercise=TRUE, exercise.lines=10}
+n <- 100000
+```
+
+## Example: Correlation Coefficient
+
+(Exercise 10.20 from MIPS)
+
+Determine $\rho\left(U,U^2\right)$ when $U\sim\text{U}(0,a)$ for $a=2$ and $a=200$. In class, we computed the value to be $\sqrt{13}/4$= `r sqrt(15)/4` for any $a>0$
+
+
+```{r echo=FALSE}
+u <- runif(25)
+ggplot() +
+  theme_classic() +
+  geom_point(aes(x = u, y = u^2), size = 1) +
+  labs(x = "U", y = expression(U^2), 
+       title = expression(paste("25 simulated values of U and ", U^2))) + 
+  scale_x_continuous(breaks = c(0, 1), limits = c(0, 1), labels = c("0", "a")) +
+  scale_y_continuous(breaks = c(0, 1), limits = c(0, 1), labels = c("0", "a")) +
+  theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 18)
+  )
+```
+
+```{r rhouu, exercise=TRUE, exercise.lines=20}
+# Write your R codes here.
+n <- 100000
+a <- 2
+
+```
+
+
+```{r rhouu2, exercise=TRUE, exercise.lines=20}
+# Write your R codes here.
+n <- 100000
+a <- 200
+
+```
+
+
+
+
+## Example: Correlation and Independence
+
+Let $X\sim N(0,1)$ and $Y=X^2$. Are they correlated?
+
+
+```{r echo=FALSE}
+x <- rnorm(25)
+ggplot() +
+  theme_classic() +
+  geom_point(aes(x = x, y = x^2), size = 1) +
+  labs(x = "X", y = "Y", title = "25 simulated values of U and Y") + 
+  theme(
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 14),
+    plot.title = element_text(size = 18)
+  )
+```
+
+
+```{r rhonorm, exercise=TRUE, exercise.lines=10}
+# Write your R codes here.
+n <- 100000
+
+```
+
