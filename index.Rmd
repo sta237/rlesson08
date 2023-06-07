@@ -7,8 +7,8 @@ runtime: shiny_prerendered
 ---
 
 
-```{r setup, include=FALSE}
-if (!require(kableExtra)) install.packages("kableExtra")
+```{r setup, include=FALSE, warning=FALSE}
+install.packages("kableExtra")
 library(learnr)
 library(tidyverse)
 library(ggplot2)
