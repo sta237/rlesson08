@@ -1,0 +1,139 @@
+---
+title: "Lecture 8: Covariance and Correlation"
+output: 
+  learnr::tutorial:
+    css: css/styles.css
+runtime: shiny_prerendered
+---
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(ggplot2)
+library(kableExtra)
+```
+
+
+## Example: Discrete Random Variables
+
+
+(Adopted from Exercise 10.3 from MIPS)
+
+Let $U$ and $V$ be two random variables with joint probability distribution defined by the following probability mass function.
+
+
+```{r echo=FALSE}
+jpmf <- rbind(
+  c("1/4", "0", "1/4", "1/2"),
+  c("0", "1/2", "0", "1/2"),
+  c("1/4", "1/2", "1/4", "1")
+  )
+rownames(jpmf) <- c("0", "1", "P(U=a)")
+colnames(jpmf) <- c("0", "1", "2", "P(V=b)")
+kable(jpmf) %>%
+  kable_paper() %>%
+  pack_rows("b", 1, 2) %>%
+  pack_rows("", 3, 3) %>%
+  add_header_above(c(" " = 1, "a" = 3, " " = 1))
+```
+
+
+Compute $E[UV]$ and $E[U+V]$ via 100,000 simulations.
+
+$E[UV]$
+
+```{r ex103, exercise=TRUE, exercise.lines=10}
+N <- 10^5
+
+
+```
+
+```{r ex103-hint-1}
+N <- 10^5
+U <- sample(0:2, N, replace = TRUE,
+            prob = c(.25, .5, .25))
+V <- ifelse(U == 1, 1, 0)
+
+```
+
+```{r ex103-solution}
+N <- 10^5
+U <- sample(0:2, N, replace = TRUE,
+            prob = c(.25, .5, .25))
+V <- ifelse(U == 1, 1, 0)
+sum(U * V) / N
+sum(U + V) / N
+```
+
+
+## Weekly Activity 4: Q4 b)
+
+The following code creates a data frame representing
+a deck of playing cards. The data frame is named `deck` and is available in the exercise code chunk.
+
+```{r echo=TRUE}
+suits <- c("Spades", "Hearts", "Clubs", "Diamonds")
+numbers <- c("A", 2:10, "J", "Q", "K")
+values <- c(11, 2:10, 10, 10, 10)
+deck <- data.frame(
+  suit = rep(suits, each = 13),
+  number = rep(numbers, 4),
+  value = rep(values, 4)
+)
+```
+
+```{r draw2-setup}
+suits <- c("Spades", "Hearts", "Clubs", "Diamonds")
+numbers <- c("A", 2:10, "J", "Q", "K")
+values <- c(11, 2:10, 10, 10, 10)
+deck <- data.frame(
+  suit = rep(suits, each = 13),
+  number = rep(numbers, 4),
+  value = rep(values, 4)
+)
+```
+
+
+Generate 1,000 simulates of the following game played by one person.
+
+_Game step:_
+
+i. From a randomly shuffled single deck, you draw 2 cards without replacement.
+ii. Sum the values of the cards based on the counting rule described below. If the count is less than $17$ go to step iii. Otherwise, __end the game__.
+iii. Draw an extra card from the remaining deck. 
+
+  
+_Counting rule:_
+
++ Counts are based on the `number`s.
++ Values between `2` and `10` are always counted as is.
++ Consider the face cards where the `number` is `J`, `Q`, or `K` as $10$.
++ Consider `A` as $11$ if the resulting total is less than $22$. Otherwise, consider `A` as $1$.
++ The "default" values are stored in `value` column of the data frame `deck`. `A` stored as $11$.
+
+Let $S$ be the sum of the values you have on your hands at the end of the game. Draw a histogram of the simulated values of $S$ with `binwidth = 1` and estimate $P(S>21)$, $E[S]$, and $\text{Var}(S)$.
+
+Today, we will simulate only the first pair of draws.
+
+```{r draw2, exercise=TRUE, exercise.lines=15}
+deck
+```
+
+
+```{r draw2-solution}
+N <- 1000
+S <- numeric(N)
+for (i in seq_len(N)) {
+  shuffled_index <- sample.int(nrow(deck))
+  n_drawn <- 2
+  s_tmp <- sum(deck$value[shuffled_index][1:n_drawn])
+  if (s_tmp > 21) {
+    s_tmp <- s_tmp - 10
+  }
+  S[i] <- s_tmp
+}
+ggplot() +
+  theme_classic() +
+  geom_histogram(aes(x = S), binwidth = 1)
+```
