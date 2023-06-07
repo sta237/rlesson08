@@ -42,8 +42,6 @@ kable(jpmf) %>%
 
 Compute $E[UV]$ and $E[U+V]$ via 100,000 simulations.
 
-$E[UV]$
-
 ```{r ex103, exercise=TRUE, exercise.lines=10}
 N <- 10^5
 
